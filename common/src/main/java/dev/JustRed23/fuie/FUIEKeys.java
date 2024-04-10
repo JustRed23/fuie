@@ -1,5 +1,7 @@
 package dev.JustRed23.fuie;
 
+import com.google.common.collect.ImmutableMap;
+import dev.JustRed23.fuie.platform.LoaderPlatform;
 import net.minecraft.client.KeyMapping;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -20,6 +22,10 @@ public final class FUIEKeys {
         return keys.get(keyCode);
     }
 
+    public static Map<Integer, KeyMapping> getKeys() {
+        return ImmutableMap.copyOf(keys);
+    }
+
     static void init() {
         String category = "key.categories." + FUIEConstants.MODID;
 
@@ -27,9 +33,13 @@ public final class FUIEKeys {
             if (field.getType() == int.class) {
                 try {
                     int keyCode = field.getInt(null);
+
+                    if (!LoaderPlatform.INSTANCE.devEnvironment() && field.getName().equals("keyDebug"))
+                        continue;
+
                     KeyMapping key = new KeyMapping("key." + FUIEConstants.MODID + "." + field.getName(), keyCode, category);
                     keys.put(keyCode, key);
-                    FUIEConstants.LOGGER.debug("Registered key: {}", key);
+                    FUIEConstants.LOGGER.debug("Registered key: {}", key.getName());
                 } catch (IllegalAccessException e) {
                     FUIEConstants.LOGGER.error("Failed to register key: {}", field.getName(), e);
                 }
