@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public final class FUIEKeys {
 
     public static int keyOpenGui = GLFW.GLFW_KEY_O;
