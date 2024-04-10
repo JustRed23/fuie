@@ -9,7 +9,7 @@ pluginManagement {
             url = 'https://maven.fabricmc.net/'
         }
         maven {
-            name = 'Sponge Snapshots'
+            name = 'Sponge'
             url = 'https://repo.spongepowered.org/repository/maven-public/'
         }
         gradlePluginPortal()
@@ -19,3 +19,4 @@ pluginManagement {
 rootProject.name = 'fuie'
 
 include 'common'
+include 'forge'

@@ -1,0 +1,31 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="All Rights Reserved"
+issueTrackerURL="https://github.com/JustRed23/${modid}/issues"
+[[mods]]
+modId="${modid}"
+version="${mod_version}"
+displayName="${modname}"
+# A URL to query for updates for this mod. See the JSON update specification https://docs.minecraftforge.net/en/latest/misc/updatechecker/
+#updateJSONURL="https://change.me.example.invalid/updates.json"
+# A file name (in the root of the mod JAR) containing a logo for display
+#logoFile="${modid}.png"
+authors="JustRed23"
+displayTest="IGNORE_ALL_VERSION"
+
+description='''
+Fancy UI Editor - A fancy component based UI mod for Minecraft
+'''
+
+[[dependencies.${modid}]]
+    modId="forge"
+    mandatory=true
+    versionRange="[47,)"
+    ordering="NONE"
+    side="CLIENT"
+[[dependencies.${modid}]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.20.1,1.21)"
+    ordering="NONE"
+    side="CLIENT"

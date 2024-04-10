@@ -1,0 +1,99 @@
+plugins {
+    id 'net.minecraftforge.gradle' version "$forgegradle"
+    id 'org.spongepowered.mixin' version "$mixingradle"
+}
+
+archivesBaseName = "$modname-forge"
+version = "$minecraft_version-$build"
+
+if (System.getenv().CI == null)
+    version += "-SNAPSHOT"
+
+mixin {
+    add sourceSets.main, "${modid}.refmap.json"
+
+    config "${modid}-common.mixins.json"
+    config "${modid}-forge.mixins.json"
+}
+
+minecraft {
+    mappings channel: 'official', version: minecraft_version
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    runs {
+        configureEach {
+            workingDirectory file('../run')
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                "$modid" {
+                    source sourceSets.main
+                    source project(":common").sourceSets.main
+                }
+            }
+        }
+
+        client {
+            ideaModule "${rootProject.name}.${project.name}.main"
+        }
+
+        data {
+            args '--mod', "$modid", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+        }
+
+        data {
+            ideaModule "${rootProject.name}.${project.name}.main"
+            args "-mixin.config=${modid}-common.mixins.json", "-mixin.config=${modid}-forge.mixins.json"
+            args '--mod', "$modid", '--all', '--output', '"' + file('src/generated/resources/') + '"'
+        }
+    }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    compileOnly project(':common')
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+}
+
+compileJava {
+    source(project(":common").sourceSets.main.allSource)
+}
+
+sourcesJar {
+    from project(":common").sourceSets.main.allJava
+}
+
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+}
+
+processResources {
+    from project(":common").sourceSets.main.resources
+
+    var replaceProperties = [
+        'modid': modid,
+        'mod_version': project.version,
+        'modname': modname
+    ]
+
+    inputs.properties replaceProperties
+
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+        expand replaceProperties + [project: project]
+    }
+
+    exclude '.cache'
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title": "${modname}",
+                "Specification-Vendor": "JustRed23",
+                "Specification-Version": "1",
+                "Implementation-Title": "${modname}",
+                "Implementation-Version": "${archiveVersion.get()}",
+                "Implementation-Vendor" :"JustRed23"
+        ])
+    }
+    finalizedBy 'reobfJar'
+}

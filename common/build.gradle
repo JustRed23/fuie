@@ -1,5 +1,4 @@
 plugins {
-    id('java')
     id('org.spongepowered.gradle.vanilla') version "$vanillagradle"
     id("com.github.gmazzo.buildconfig") version "$buildconfig"
 }
@@ -33,5 +32,11 @@ sourceSets.main.resources {
 }
 
 processResources {
+    inputs.property "modid", modid
+
+    filesMatching("pack.mcmeta") {
+        expand "modid": modid
+    }
+
     exclude '.cache'
 }
