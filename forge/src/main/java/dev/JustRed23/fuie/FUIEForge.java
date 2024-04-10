@@ -15,10 +15,8 @@ import net.minecraftforge.fml.loading.FMLLoader;
 public class FUIEForge {
 
     public FUIEForge() {
-        if (FMLLoader.getDist().isDedicatedServer()) {
-            FUIEConstants.LOGGER.warn("{} is a client-side mod and does not do anything on a dedicated server! Disabling...", FUIEConstants.NAME);
+        if (FMLLoader.getDist().isDedicatedServer())
             return;
-        }
 
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(this::onClientSetup);

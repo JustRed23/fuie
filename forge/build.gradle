@@ -35,16 +35,6 @@ minecraft {
         client {
             ideaModule "${rootProject.name}.${project.name}.main"
         }
-
-        data {
-            args '--mod', "$modid", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-        }
-
-        data {
-            ideaModule "${rootProject.name}.${project.name}.main"
-            args "-mixin.config=${modid}-common.mixins.json", "-mixin.config=${modid}-forge.mixins.json"
-            args '--mod', "$modid", '--all', '--output', '"' + file('src/generated/resources/') + '"'
-        }
     }
 }
 
