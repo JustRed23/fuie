@@ -1,0 +1,31 @@
+{
+	"schemaVersion": 1,
+	"id": "${modid}",
+	"version": "${mod_version}",
+	"name": "${modname}",
+	"description": "Fancy UI Editor - A fancy component based UI mod for Minecraft",
+	"authors": [
+		"JustRed23"
+	],
+	"contact": {
+		"sources": "https://github.com/JustRed23/${modid}"
+	},
+	"license": "All Rights Reserved",
+	"icon": "${modid}.png",
+	"environment": "*",
+	"entrypoints": {
+		"client": [
+			"dev.JustRed23.fuie.FUIEFabric"
+		]
+	},
+	"mixins": [
+		"fuie-common.mixins.json",
+		"fuie-fabric.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=${fabric_loader_version}",
+		"minecraft": "~${minecraft_version}",
+		"java": ">=${java_version}",
+		"fabric-api": ">=${fabric_version}"
+	}
+}

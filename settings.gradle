@@ -20,3 +20,4 @@ rootProject.name = 'fuie'
 
 include 'common'
 include 'forge'
+include 'fabric'

@@ -1,0 +1,72 @@
+plugins {
+    id 'fabric-loom' version "$loomgradle"
+}
+
+archivesBaseName = "$modname-fabric"
+version = "$minecraft_version-$build"
+
+if (System.getenv().CI == null)
+    version += "-SNAPSHOT"
+
+fabricApi {
+    configureDataGeneration()
+}
+
+loom {
+    mixin.defaultRefmapName = "${modid}.refmap.json"
+
+    runs {
+        client {
+            property 'fabric.development', 'true'
+        }
+
+        configureEach {
+            runDir "../run"
+            ideConfigGenerated(true)
+        }
+    }
+
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.officialMojangMappings()
+    compileOnly project(":common")
+
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+}
+
+compileJava {
+    source(project(":common").sourceSets.main.allSource)
+}
+
+sourcesJar {
+    from project(":common").sourceSets.main.allJava
+}
+
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+}
+
+processResources {
+    from project(":common").sourceSets.main.resources
+
+    var replaceProperties = [
+            'modid': modid,
+            'mod_version': project.version,
+            'modname': modname,
+            'minecraft_version': minecraft_version,
+            'java_version': java_language_version,
+            'fabric_loader_version': fabric_loader_version,
+            'fabric_version': fabric_version,
+    ]
+
+    inputs.properties replaceProperties
+
+    filesMatching(['fabric.mod.json', 'pack.mcmeta']) {
+        expand replaceProperties + [project: project]
+    }
+
+    exclude '.cache'
+}
