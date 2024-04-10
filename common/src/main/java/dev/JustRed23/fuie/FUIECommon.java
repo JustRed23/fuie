@@ -6,5 +6,10 @@ public final class FUIECommon {
 
     public static void initialize() {
         FUIEConstants.LOGGER.info("{} version {} initializing...", FUIEConstants.NAME, SharedConstants.getCurrentVersion().getName() + "-" + FUIEConstants.BUILD);
+        FUIEKeys.init();
+    }
+
+    public static void onClientTick() {
+        FUIEKeys.onClientTick();
     }
 }
