@@ -1,0 +1,37 @@
+plugins {
+    id('java')
+    id('org.spongepowered.gradle.vanilla') version "$vanillagradle"
+    id("com.github.gmazzo.buildconfig") version "$buildconfig"
+}
+
+archivesBaseName = "$modname-common"
+version = "$minecraft_version-$build"
+
+if (System.getenv().CI == null)
+    version += "-SNAPSHOT"
+
+minecraft {
+    version(minecraft_version)
+}
+
+buildConfig {
+    packageName("$group.$modid")
+    className("$modid".toUpperCase() + "Constants")
+
+    buildConfigField(String, "MODID", "$modid")
+    buildConfigField(String, "NAME", "$modname")
+    buildConfigField(int, "BUILD", "$build")
+    buildConfigField("org.slf4j.Logger", "LOGGER", "org.slf4j.LoggerFactory.getLogger(MODID)")
+}
+
+dependencies {
+    compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
+}
+
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+}
+
+processResources {
+    exclude '.cache'
+}
