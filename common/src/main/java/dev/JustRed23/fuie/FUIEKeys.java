@@ -17,6 +17,11 @@ public final class FUIEKeys {
     public static int keyDebug = GLFW.GLFW_KEY_F4;
 
     private static final Map<Integer, KeyMapping> keys = new HashMap<>();
+    private static final Map<Integer, KeyCallback> keyCallbacks = new HashMap<>();
+
+    public static void registerKeyCallback(int keyCode, KeyCallback callback) {
+        keyCallbacks.put(keyCode, callback);
+    }
 
     public static @Nullable KeyMapping getKey(int keyCode) {
         return keys.get(keyCode);
@@ -49,9 +54,10 @@ public final class FUIEKeys {
     }
 
     static void onClientTick() {
-        keys.forEach(($, key) -> {
+        keys.forEach((keyCode, key) -> {
             while (key.consumeClick()) {
-                FUIEConstants.LOGGER.debug("Key {} was pressed", key.getName());
+                KeyCallback callback = keyCallbacks.get(keyCode);
+                if (callback != null) callback.run();
             }
         });
     }
