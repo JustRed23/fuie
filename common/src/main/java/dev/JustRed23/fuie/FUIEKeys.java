@@ -58,6 +58,7 @@ public final class FUIEKeys {
             while (key.consumeClick()) {
                 KeyCallback callback = keyCallbacks.get(keyCode);
                 if (callback != null) callback.run();
+                else FUIEConstants.LOGGER.warn("Key callback for key {} is null", key.getName());
             }
         });
     }
