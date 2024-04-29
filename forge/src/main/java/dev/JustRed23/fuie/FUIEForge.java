@@ -19,18 +19,18 @@ public class FUIEForge {
             return;
 
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        bus.addListener(this::onClientSetup);
         bus.addListener(this::onKeyRegister);
+        bus.addListener(this::onClientSetup);
 
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    public void onClientSetup(FMLClientSetupEvent event) {
-        FUIECommon.initialize();
-    }
-
     public void onKeyRegister(RegisterKeyMappingsEvent event) {
         FUIEKeys.getKeys().forEach((keycode, key) -> event.register(key));
+    }
+
+    public void onClientSetup(FMLClientSetupEvent event) {
+        FUIECommon.initialize();
     }
 
     @SubscribeEvent

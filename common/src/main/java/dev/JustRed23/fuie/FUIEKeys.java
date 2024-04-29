@@ -14,7 +14,7 @@ import java.util.Map;
 public final class FUIEKeys {
 
     public static int keyOpenGui = GLFW.GLFW_KEY_O;
-    public static int keyDebug = GLFW.GLFW_KEY_F3;
+    public static int keyDebug = GLFW.GLFW_KEY_F4;
 
     private static final Map<Integer, KeyMapping> keys = new HashMap<>();
 
@@ -23,10 +23,11 @@ public final class FUIEKeys {
     }
 
     public static Map<Integer, KeyMapping> getKeys() {
+        if (keys.isEmpty()) init();
         return ImmutableMap.copyOf(keys);
     }
 
-    static void init() {
+    private static void init() {
         String category = "key.categories." + FUIEConstants.MODID;
 
         for (Field field : FUIEKeys.class.getDeclaredFields()) {

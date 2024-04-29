@@ -7,8 +7,13 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 public class FUIEFabric implements ClientModInitializer {
 
     public void onInitializeClient() {
-        FUIECommon.initialize();
+        //Key registering
         FUIEKeys.getKeys().forEach((keyCode, key) -> KeyBindingHelper.registerKeyBinding(key));
+
+        //Init common
+        FUIECommon.initialize();
+
+        //Client tick event
         ClientTickEvents.END_CLIENT_TICK.register($ -> FUIECommon.onClientTick());
     }
 }
