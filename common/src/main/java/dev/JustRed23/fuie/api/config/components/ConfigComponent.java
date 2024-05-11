@@ -1,0 +1,167 @@
+package dev.JustRed23.fuie.api.config.components;
+
+import net.minecraft.client.gui.GuiGraphics;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+public abstract class ConfigComponent<T> extends ComponentEvents {
+
+    private final @NotNull String name;
+    private final @Nullable String description;
+
+    private @Nullable T value;
+
+    public ConfigComponent(@NotNull String name, @Nullable String description, @Nullable T defaultValue) {
+        this.name = name;
+        this.description = description;
+        this.value = defaultValue;
+
+        // Set default values
+        setX(0);
+        setY(0);
+        setWidth(100);
+        setHeight(50);
+        setBackgroundColor(0xFF000000);
+        setBorderColor(0xFFAAAAAA);
+        setForegroundColor(0xFF0098FF);
+        setTextColor(0xFFFFFFFF);
+    }
+
+    //Enforce the implementation of these methods
+    public abstract void updateComponent();
+    public abstract void renderComponent(GuiGraphics g);
+
+    public @NotNull String getName() {
+        return name;
+    }
+
+    public @Nullable String getDescription() {
+        return description;
+    }
+
+    protected void setValue(@Nullable T value) {
+        this.value = value;
+    }
+
+    public @Nullable T getValue() {
+        return value;
+    }
+
+    public int getComponentX() {
+        return getX() + getPadding().left() + getBorderSize();
+    }
+
+    public int getComponentY() {
+        return getY() + getPadding().top() + getBorderSize();
+    }
+
+    public int getComponentWidth() {
+        return getWidth() - (getPadding().left() + getPadding().right() + (getBorderSize() * 2));
+    }
+
+    public int getComponentHeight() {
+        return getHeight() - (getPadding().top() + getPadding().bottom() + (getBorderSize() * 2));
+    }
+
+    //Internal methods
+    @ApiStatus.Internal
+    public final void onComponentUpdate() {
+        updateComponent();
+    }
+
+    @ApiStatus.Internal
+    public final void onComponentRender(GuiGraphics g) {
+        if (isDebug()) renderPadding(g);
+        renderBorder(g);
+        renderComponent(g);
+    }
+
+    private void renderPadding(GuiGraphics g) {
+        int borderSize = getBorderSize();
+        ComponentPadding padding = getPadding();
+
+        if (!padding.paddingExists()) return;
+
+        int colorLeft = 0xFFFF0000;
+        int colorRight = 0xFF00FF00;
+        int colorTop = 0xFF0000FF;
+        int colorBottom = 0xFFFFFF00;
+
+        int x = getX() + borderSize;
+        int y = getY() + borderSize;
+        int width = getWidth() - (borderSize * 2);
+        int height = getHeight() - (borderSize * 2);
+
+        //Left side
+        g.fill(x,
+                y + padding.top(),
+                x + padding.left(),
+                y + height - padding.bottom(),
+                colorLeft
+        );
+
+        //Right side
+        g.fill(x + width - padding.right(),
+                y + padding.top(),
+                x + width,
+                y + height - padding.bottom(),
+                colorRight
+        );
+
+        //Top side
+        g.fill(x,
+                y,
+                x + width,
+                y + padding.top(),
+                colorTop
+        );
+
+        //Bottom side
+        g.fill(x,
+                y + height - padding.bottom(),
+                x + width,
+                y + height,
+                colorBottom
+        );
+    }
+
+    private void renderBorder(GuiGraphics g) {
+        int borderColor = getBorderColor();
+        int borderSize = getBorderSize();
+
+        if (borderSize == 0) return;
+
+        //Left side
+        g.fill(getX(),
+                getY() + borderSize,
+                getX() + borderSize,
+                getY() + getHeight() - borderSize,
+                borderColor
+        );
+
+        //Right side
+        g.fill(getX() + getWidth() - borderSize,
+                getY() + borderSize,
+                getX() + getWidth(),
+                getY() + getHeight() - borderSize,
+                borderColor
+        );
+
+        //Top side
+        g.fill(getX(),
+                getY(),
+                getX() + getWidth(),
+                getY() + borderSize,
+                borderColor
+        );
+
+        //Bottom side
+        g.fill(getX(),
+                getY() + getHeight() - borderSize,
+                getX() + getWidth(),
+                getY() + getHeight(),
+                borderColor
+        );
+    }
+}
