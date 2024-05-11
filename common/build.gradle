@@ -40,3 +40,12 @@ processResources {
 
     exclude '.cache'
 }
+
+tasks.register('apiJar', Jar) {
+    dependsOn classes
+    archiveBaseName.set("$modid-api")
+    from sourceSets.main.output
+    include "dev/JustRed23/$modid/api/**"
+}
+
+jar.dependsOn tasks.apiJar
