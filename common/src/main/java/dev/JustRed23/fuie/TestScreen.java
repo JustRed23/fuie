@@ -2,6 +2,7 @@ package dev.JustRed23.fuie;
 
 import dev.JustRed23.fuie.api.config.components.Checkbox;
 import dev.JustRed23.fuie.api.config.components.ConfigComponent;
+import dev.JustRed23.fuie.api.config.components.Slider;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -20,9 +21,13 @@ public class TestScreen extends Screen {
         Checkbox checkbox2 = new Checkbox("Test 2", "This is a checkbox", true);
         checkbox2.setX(checkbox1.getX() + checkbox1.getWidth() + 10);
 
+        Slider slider1 = new Slider("Slider 1", "This is a slider", 0, 100, 50);
+        slider1.setY(checkbox1.getY() + checkbox1.getHeight() + 10);
+
         component = new ConfigComponent[] {
                 checkbox1,
                 checkbox2,
+                slider1
         };
     }
 
