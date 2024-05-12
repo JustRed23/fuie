@@ -9,7 +9,7 @@ public abstract class ComponentEvents extends ComponentGraphics {
     public void onMouseLeave() {}
     public void onMouseClick(double mouseX, double mouseY) {}
     public void onMouseRelease(double mouseX, double mouseY) {}
-    public void onMouseDrag(double mouseX, double mouseY) {}
+    public void onMouseDrag(double mouseX, double mouseY, double deltaX, double deltaY) {}
     public void onMouseScroll(double mouseX, double mouseY, double scroll) {}
 
     public void onKeyPress(int keyCode, int scanCode, int modifiers) {}
