@@ -26,28 +26,23 @@ public class Checkbox extends ConfigComponent<Boolean> {
         }
     }
 
-    public void onMouseClick(double mouseX, double mouseY) {
-        if (mouseX >= getComponentX() && mouseX <= getComponentX() + cbSize && mouseY >= getComponentY() && mouseY <= getComponentY() + cbSize)
-            setValue(!Boolean.TRUE.equals(getValue()));
-    }
-
     public void renderComponent(GuiGraphics g) {
-        int color = getForegroundColor();
-        g.hLine(getComponentX(), getComponentX() + cbSize - 1, getComponentY(), color);
-        g.hLine(getComponentX(), getComponentX() + cbSize - 1, getComponentY() + cbSize - 1, color);
-        g.vLine(getComponentX(), getComponentY(), getComponentY() + cbSize, color);
-        g.vLine(getComponentX() + cbSize - 1, getComponentY(), getComponentY() + cbSize - 1, color);
+        drawHollowRect(g, getComponentX(), getComponentY(), cbSize, cbSize, getForegroundColor());
 
         int checkOffset = 2;
         if (Boolean.TRUE.equals(getValue())) {
             int cbX = getComponentX() + checkOffset;
             int cbY = getComponentY() + checkOffset;
-            int cbW = cbSize - (2 * checkOffset);
-            int cbH = cbSize - (2 * checkOffset);
+            int wh = cbSize - (2 * checkOffset);
 
-            g.fill(cbX, cbY, cbX + cbW, cbY + cbH, getForegroundColor());
+            drawRect(g, cbX, cbY, wh, wh, getForegroundColor());
         }
 
         g.drawString(Minecraft.getInstance().font, getName(), getComponentX() + cbSize + textOffset, getComponentY() + checkOffset, getTextColor());
+    }
+
+    public void onMouseClick(double mouseX, double mouseY) {
+        if (mouseX >= getComponentX() && mouseX <= getComponentX() + cbSize && mouseY >= getComponentY() && mouseY <= getComponentY() + cbSize)
+            setValue(!Boolean.TRUE.equals(getValue()));
     }
 }
