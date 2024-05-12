@@ -32,6 +32,25 @@ public abstract class ConfigComponent<T> extends ComponentEvents {
     public abstract void updateComponent();
     public abstract void renderComponent(GuiGraphics g);
 
+    //Helper methods
+    protected void drawRect(GuiGraphics g, int x, int y, int width, int height, int color) {
+        if (width <= 0 || height <= 0) return;
+        g.fill(x, y, x + width, y + height, color);
+    }
+
+    protected void drawHollowRect(GuiGraphics g, int x, int y, int width, int height, int color) {
+        if (width <= 0 || height <= 0) return;
+
+        if (width > 1) width -= 1;
+        if (height > 1) height -= 1;
+
+        g.hLine(x, x + width, y, color);
+        g.hLine(x, x + width, y + height, color);
+        g.vLine(x, y, y + height, color);
+        g.vLine(x + width, y, y + height, color);
+    }
+
+    //Getters and Setters
     public @NotNull String getName() {
         return name;
     }
