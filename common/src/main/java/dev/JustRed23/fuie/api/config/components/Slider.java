@@ -29,7 +29,6 @@ public class Slider extends ConfigComponent<Double> {
             throw new IllegalArgumentException("Default value must be between min and max value!");
 
         setBackgroundColor(0xFFBBBBBB);
-        setBorderSize(1);
 
         setHeight(sliderBaseHeight + sliderButtonHeight + Minecraft.getInstance().font.lineHeight + 4);
     }
