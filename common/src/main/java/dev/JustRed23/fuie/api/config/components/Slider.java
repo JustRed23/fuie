@@ -26,7 +26,7 @@ public class Slider extends ConfigComponent<Double> {
         this.maxValue = maxValue;
 
         if (defaultValue < minValue || defaultValue > maxValue)
-            throw new IllegalArgumentException("Default value must be between min and max value!");
+            throw new IllegalArgumentException("Default value must be between %s and %s!".formatted(minValue, maxValue));
 
         setBackgroundColor(0xFFBBBBBB);
 
