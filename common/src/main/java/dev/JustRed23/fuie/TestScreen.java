@@ -21,23 +21,31 @@ public class TestScreen extends Screen {
         Checkbox checkbox2 = new Checkbox("Test 2", "This is a checkbox", true);
         checkbox2.setX(checkbox1.getX() + checkbox1.getWidth() + 10);
 
-        Slider slider1 = new Slider("Slider 1", "This is a slider", 0, 100, 50);
+        Slider slider1 = new Slider("Slider 1", "This is a slider", 0, 100, 0);
         slider1.setY(checkbox1.getY() + checkbox1.getHeight() + 10);
+
+        Slider slider2 = new Slider("Slider 2", "This is a slider", 0, 100, 50);
+        slider2.setY(slider1.getY() + slider1.getHeight() + 10);
+
+        Slider slider3 = new Slider("Slider 3", "This is a slider", 0, 100, 100);
+        slider3.setY(slider2.getY() + slider2.getHeight() + 10);
 
         component = new ConfigComponent[] {
                 checkbox1,
                 checkbox2,
-                slider1
+                slider1,
+                slider2,
+                slider3
         };
     }
 
     public void render(GuiGraphics $$0, int $$1, int $$2, float $$3) {
         renderBackground($$0);
-        Arrays.stream(component).forEach(c -> c.renderComponent($$0));
+        Arrays.stream(component).forEach(c -> c.onComponentRender($$0));
     }
 
     public void tick() {
-        Arrays.stream(component).forEach(ConfigComponent::updateComponent);
+        Arrays.stream(component).forEach(ConfigComponent::onComponentUpdate);
     }
 
     public boolean mouseClicked(double $$0, double $$1, int $$2) {
