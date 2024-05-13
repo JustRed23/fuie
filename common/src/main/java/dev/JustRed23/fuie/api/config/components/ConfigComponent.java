@@ -29,8 +29,8 @@ public abstract class ConfigComponent<T> extends ComponentEvents {
     }
 
     //Enforce the implementation of these methods
-    public abstract void updateComponent();
-    public abstract void renderComponent(GuiGraphics g);
+    protected abstract void updateComponent();
+    protected abstract void renderComponent(GuiGraphics g);
 
     //Helper methods
     protected void drawRect(GuiGraphics g, int x, int y, int width, int height, int color) {
@@ -151,36 +151,6 @@ public abstract class ConfigComponent<T> extends ComponentEvents {
 
         if (borderSize == 0) return;
 
-        //Left side
-        g.fill(getX(),
-                getY() + borderSize,
-                getX() + borderSize,
-                getY() + getHeight() - borderSize,
-                borderColor
-        );
-
-        //Right side
-        g.fill(getX() + getWidth() - borderSize,
-                getY() + borderSize,
-                getX() + getWidth(),
-                getY() + getHeight() - borderSize,
-                borderColor
-        );
-
-        //Top side
-        g.fill(getX(),
-                getY(),
-                getX() + getWidth(),
-                getY() + borderSize,
-                borderColor
-        );
-
-        //Bottom side
-        g.fill(getX(),
-                getY() + getHeight() - borderSize,
-                getX() + getWidth(),
-                getY() + getHeight(),
-                borderColor
-        );
+        drawHollowRect(g, getX(), getY(), getWidth(), getHeight(), borderColor);
     }
 }
