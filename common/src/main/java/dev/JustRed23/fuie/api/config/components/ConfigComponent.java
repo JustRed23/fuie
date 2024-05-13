@@ -1,5 +1,7 @@
 package dev.JustRed23.fuie.api.config.components;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +13,8 @@ public abstract class ConfigComponent<T> extends ComponentEvents {
     private final @Nullable String description;
 
     private @Nullable T value;
+
+    protected final Font font = Minecraft.getInstance().font;
 
     public ConfigComponent(@NotNull String name, @Nullable String description, @Nullable T defaultValue) {
         this.name = name;

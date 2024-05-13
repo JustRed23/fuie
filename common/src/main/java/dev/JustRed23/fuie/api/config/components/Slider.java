@@ -30,7 +30,7 @@ public class Slider extends ConfigComponent<Double> {
 
         setBackgroundColor(0xFFBBBBBB);
 
-        setHeight(sliderBaseHeight + sliderButtonHeight + Minecraft.getInstance().font.lineHeight + 4);
+        setHeight(sliderBaseHeight + sliderButtonHeight + font.lineHeight + 4);
     }
 
     public Slider(@NotNull String name, @Nullable String description, double defaultValue) {
@@ -39,7 +39,7 @@ public class Slider extends ConfigComponent<Double> {
 
     public void updateComponent() {
         if (lastSliderBaseHeight != sliderBaseHeight || lastSliderIndent != sliderIndent || lastSliderButtonWidth != sliderButtonWidth || lastSliderButtonHeight != sliderButtonHeight) {
-            setHeight(sliderBaseHeight + sliderButtonHeight + Minecraft.getInstance().font.lineHeight + 4);
+            setHeight(sliderBaseHeight + sliderButtonHeight + font.lineHeight + 4);
             lastSliderBaseHeight = sliderBaseHeight;
             lastSliderIndent = sliderIndent;
             lastSliderButtonWidth = sliderButtonWidth;
@@ -68,7 +68,6 @@ public class Slider extends ConfigComponent<Double> {
 
         //Slider text
         final String text = getName() + ": " + String.format("%.2f", value);
-        final Font font = Minecraft.getInstance().font;
         g.drawString(font, text, getComponentX() + sliderIndent, sbY - (sliderButtonHeight / 2) - font.lineHeight, getTextColor());
     }
 
