@@ -2,6 +2,7 @@ package dev.JustRed23.fuie;
 
 import dev.JustRed23.fuie.api.config.components.Checkbox;
 import dev.JustRed23.fuie.api.config.components.ConfigComponent;
+import dev.JustRed23.fuie.api.config.components.InputBox;
 import dev.JustRed23.fuie.api.config.components.Slider;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -30,12 +31,16 @@ public class TestScreen extends Screen {
         Slider slider3 = new Slider("Slider 3", "This is a slider", 0, 100, 100);
         slider3.setY(slider2.getY() + slider2.getHeight() + 10);
 
+        InputBox inputBox = new InputBox("Bingus Box", "This is an input box", "bingus", 20);
+        inputBox.setY(slider3.getY() + slider3.getHeight() + 10);
+
         component = new ConfigComponent[] {
                 checkbox1,
                 checkbox2,
                 slider1,
                 slider2,
-                slider3
+                slider3,
+                inputBox
         };
     }
 
@@ -61,5 +66,20 @@ public class TestScreen extends Screen {
     public boolean mouseDragged(double $$0, double $$1, int $$2, double $$3, double $$4) {
         Arrays.stream(component).forEach(c -> c.onMouseDrag($$0, $$1, $$3, $$4));
         return super.mouseDragged($$0, $$1, $$2, $$3, $$4);
+    }
+
+    public boolean keyPressed(int $$0, int $$1, int $$2) {
+        Arrays.stream(component).forEach(c -> c.onKeyPress($$0, $$1, $$2));
+        return super.keyPressed($$0, $$1, $$2);
+    }
+
+    public boolean keyReleased(int $$0, int $$1, int $$2) {
+        Arrays.stream(component).forEach(c -> c.onKeyRelease($$0, $$1, $$2));
+        return super.keyReleased($$0, $$1, $$2);
+    }
+
+    public boolean charTyped(char $$0, int $$1) {
+        Arrays.stream(component).forEach(c -> c.onKeyType($$0, $$1));
+        return super.charTyped($$0, $$1);
     }
 }
