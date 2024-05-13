@@ -1,10 +1,14 @@
 package dev.JustRed23.fuie.api.config.components;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class Slider extends ConfigComponent<Double> {
+
+    private int lastSliderBaseHeight, lastSliderIndent, lastSliderButtonWidth, lastSliderButtonHeight;
 
     public int sliderBaseHeight = 2;
     public int sliderIndent = 6;
@@ -26,23 +30,28 @@ public class Slider extends ConfigComponent<Double> {
 
         setBackgroundColor(0xFFBBBBBB);
         setBorderSize(1);
+
+        setHeight(sliderBaseHeight + sliderButtonHeight + Minecraft.getInstance().font.lineHeight + 4);
     }
 
     public Slider(@NotNull String name, @Nullable String description, double defaultValue) {
         this(name, description, 0, 1, defaultValue);
     }
 
-    public void updateComponent() {}
+    public void updateComponent() {
+        if (lastSliderBaseHeight != sliderBaseHeight || lastSliderIndent != sliderIndent || lastSliderButtonWidth != sliderButtonWidth || lastSliderButtonHeight != sliderButtonHeight) {
+            setHeight(sliderBaseHeight + sliderButtonHeight + Minecraft.getInstance().font.lineHeight + 4);
+            lastSliderBaseHeight = sliderBaseHeight;
+            lastSliderIndent = sliderIndent;
+            lastSliderButtonWidth = sliderButtonWidth;
+            lastSliderButtonHeight = sliderButtonHeight;
+        }
+    }
 
     public void renderComponent(GuiGraphics g) {
-        drawHollowRect(g, getComponentX(), getComponentY(), getComponentWidth(), getComponentHeight(), getBorderColor());
-
-        final int halfHeight = getComponentHeight() / 2;
-        final int halfSliderBaseHeight = sliderBaseHeight / 2;
-
         //Slider base
         final int sbX = getComponentX() + sliderIndent;
-        final int sbY = getComponentY() + (halfHeight - halfSliderBaseHeight);
+        final int sbY = getComponentY() + (getComponentHeight() - (sliderBaseHeight / 2) - (sliderButtonHeight / 2));
         final int sbW = getComponentWidth() - (sliderIndent * 2);
         final int sbH = sliderBaseHeight;
 
@@ -57,14 +66,16 @@ public class Slider extends ConfigComponent<Double> {
         final int buttonY = sbY - ((sliderButtonHeight - sliderBaseHeight) / 2);
 
         drawRect(g, buttonX, buttonY, sliderButtonWidth, sliderButtonHeight, getForegroundColor());
+
+        //Slider text
+        final String text = getName() + ": " + String.format("%.2f", value);
+        final Font font = Minecraft.getInstance().font;
+        g.drawString(font, text, getComponentX() + sliderIndent, sbY - (sliderButtonHeight / 2) - font.lineHeight, getTextColor());
     }
 
     public void onMouseClick(double mouseX, double mouseY) {
-        final int halfHeight = getComponentHeight() / 2;
-        final int halfSliderBaseHeight = sliderBaseHeight / 2;
-
         final int sbX = getComponentX() + sliderIndent;
-        final int sbY = getComponentY() + (halfHeight - halfSliderBaseHeight);
+        final int sbY = getComponentY() + (getComponentHeight() - (sliderBaseHeight / 2) - (sliderButtonHeight / 2));
         final int sbW = getComponentWidth() - (sliderIndent * 2);
 
         final int rightX = sbX + sbW;
@@ -72,6 +83,16 @@ public class Slider extends ConfigComponent<Double> {
         final int bottomY = topY + sliderBaseHeight + sliderButtonHeight;
 
         canDrag = mouseX >= sbX && mouseX <= rightX && mouseY >= topY && mouseY <= bottomY;
+
+        if (canDrag) {
+            final double valueRange = maxValue - minValue;
+            final double valuePercentage = (mouseX - sbX) / sbW;
+
+            double newValue = minValue + (valueRange * valuePercentage);
+            newValue = Math.max(minValue, Math.min(maxValue, newValue));
+
+            setValue(newValue);
+        }
     }
 
     public void onMouseRelease(double mouseX, double mouseY) {
@@ -79,6 +100,17 @@ public class Slider extends ConfigComponent<Double> {
     }
 
     public void onMouseDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-        //TODO: Implement slider dragging
+        if (canDrag) {
+            final int sbX = getComponentX() + sliderIndent;
+            final int sbW = getComponentWidth() - (sliderIndent * 2);
+
+            final double valueRange = maxValue - minValue;
+            final double valuePercentage = (mouseX - sbX) / sbW;
+
+            double newValue = minValue + (valueRange * valuePercentage);
+            newValue = Math.max(minValue, Math.min(maxValue, newValue));
+
+            setValue(newValue);
+        }
     }
 }
