@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class Checkbox extends ConfigComponent<Boolean> {
 
-    private int lastCbSize = 10, lastTextOffset = 4;
+    private int lastCbSize, lastTextOffset;
     public int cbSize = 10;
     public int textOffset = 4;
 
