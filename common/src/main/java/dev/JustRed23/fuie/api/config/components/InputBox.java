@@ -1,7 +1,9 @@
 package dev.JustRed23.fuie.api.config.components;
 
 import net.minecraft.SharedConstants;
+import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,17 +11,20 @@ public class InputBox extends ConfigComponent<String> {
 
     public final int minBoxHeight = 13;
 
-    private int lastBoxBorder, lastTextIndent, lastCaretDelay;
+    private int lastBoxBorder, lastTextIndent, lastCursorDelay;
     public int boxBorder = 1;
     public int textIndent = 2;
-    public int caretDelay = 10;
+    public int cursorDelay = 10;
 
     private final int maxTextLength;
 
     private boolean hasFocus = false;
 
-    private int caretCounter = 0;
-    private boolean caretVisible = false;
+    private int cursorCounter = 0;
+    private boolean cursorVisible = false;
+
+    private int displayPosition;
+    private int cursorPosition;
 
     public InputBox(@NotNull String name, @Nullable String description, @Nullable String defaultValue, int maxTextLength) {
         super(name, description, defaultValue);
@@ -28,6 +33,8 @@ public class InputBox extends ConfigComponent<String> {
         if (defaultValue != null && defaultValue.length() > maxTextLength) throw new IllegalArgumentException("Default value is longer than max text length");
 
         this.maxTextLength = maxTextLength;
+        this.cursorPosition = defaultValue == null ? 0 : defaultValue.length();
+
         setHeight(minBoxHeight + font.lineHeight + 2);
     }
 
@@ -43,17 +50,17 @@ public class InputBox extends ConfigComponent<String> {
 
     protected void updateComponent() {
         if (hasFocus) {
-            caretCounter++;
-            if (caretCounter >= caretDelay) {
-                caretCounter = 0;
-                caretVisible = !caretVisible;
+            cursorCounter++;
+            if (cursorCounter >= cursorDelay) {
+                cursorCounter = 0;
+                cursorVisible = !cursorVisible;
             }
         }
 
-        if (lastBoxBorder != boxBorder || lastTextIndent != textIndent || lastCaretDelay != caretDelay) {
+        if (lastBoxBorder != boxBorder || lastTextIndent != textIndent || lastCursorDelay != cursorDelay) {
             lastBoxBorder = boxBorder;
             lastTextIndent = textIndent;
-            lastCaretDelay = caretDelay;
+            lastCursorDelay = cursorDelay;
         }
     }
 
@@ -66,15 +73,38 @@ public class InputBox extends ConfigComponent<String> {
         drawRect(g, getComponentX(), y, getComponentWidth(), height, getBackgroundColor());
 
         String text = getValue() == null ? "" : getValue();
+        text = calculateDisplayText(text);
 
-        //trim text if too long
-        while (!text.isEmpty() && font.width(text + "_") > getComponentWidth() - textIndent)
-            text = text.substring(1);
-
-        if (hasFocus && caretVisible)
-            text += "_";
+        drawCursor(g, text, y, height);
 
         g.drawString(font, text, getComponentX() + textIndent, y + (height / 2) - (font.lineHeight / 2), getTextColor());
+    }
+
+    private String calculateDisplayText(String input) {
+        int inputLength = input.length();
+        int availableWidth = getComponentWidth() - textIndent - 1; //1 for the cursor
+
+        if (font.width(input) <= availableWidth) {
+            displayPosition = 0;
+            return input;
+        }
+
+        String maxChars = font.plainSubstrByWidth(input, availableWidth, true);
+        int displayableChars = maxChars.length();
+
+        if (cursorPosition < displayPosition || cursorPosition >= displayPosition + displayableChars)
+            displayPosition = Math.max(0, cursorPosition - displayableChars);
+
+        return input.substring(displayPosition, Math.min(inputLength, displayPosition + displayableChars));
+    }
+
+    private void drawCursor(GuiGraphics g, String text, int y, int height) {
+        if (!hasFocus || !cursorVisible) return;
+
+        int position = Mth.clamp(cursorPosition - displayPosition, 0, text.length());
+        int cursorX = getComponentX() + textIndent + font.width(text.substring(0, position));
+        int cursorY = y + (height / 2) - (font.lineHeight / 2);
+        drawRect(g, cursorX, cursorY, 1, font.lineHeight, getTextColor());
     }
 
     public void onMouseClick(double mouseX, double mouseY) {
@@ -95,16 +125,45 @@ public class InputBox extends ConfigComponent<String> {
     public void onKeyPress(int keyCode, int scanCode, int modifiers) {
         if (!hasFocus) return;
 
-        //TODO:event logic here
-        System.out.println("Key pressed: " + keyCode);
-
         switch (keyCode) {
             case 259 -> { //backspace
                 String value = getValue();
                 if (value == null || value.isEmpty()) return;
-                setValue(value.substring(0, value.length() - 1));
+                if (cursorPosition == 0) return;
+                setValue(value.substring(0, cursorPosition - 1) + value.substring(cursorPosition));
+                this.moveCursor(-1);
             }
+            case 261 -> { //delete
+                String value = getValue();
+                if (value == null || value.isEmpty()) return;
+                if (cursorPosition == value.length()) return;
+                setValue(value.substring(0, cursorPosition) + value.substring(cursorPosition + 1));
+            }
+            case 263 -> //left arrow
+                    this.moveCursor(-1);
+            case 262 -> //right arrow
+                    this.moveCursor(1);
         }
+    }
+
+    private void moveCursor(int amount) {
+        this.moveCursorTo(getCursorPos(amount));
+    }
+
+    private void moveCursorTo(int position) {
+        int prevPosition = cursorPosition;
+        this.cursorPosition = Mth.clamp(position, 0, getValue() == null ? 0 : getValue().length());
+        if (prevPosition != cursorPosition) {
+            cursorCounter = 0;
+            cursorVisible = true;
+        }
+    }
+
+    private int getCursorPos(int amount) {
+        String value = getValue() == null ? "" : getValue();
+        if (cursorPosition > value.length()) return value.length();
+
+        return Util.offsetByCodepoints(value, this.cursorPosition, amount);
     }
 
     public void onKeyType(char typedChar, int keyCode) {
@@ -116,5 +175,6 @@ public class InputBox extends ConfigComponent<String> {
         String toAdd = SharedConstants.filterText(Character.toString(typedChar));
         if (toAdd.isEmpty()) return;
         setValue(value + toAdd);
+        cursorPosition += toAdd.length();
     }
 }
