@@ -1,18 +1,26 @@
 package dev.JustRed23.fuie;
 
-import dev.JustRed23.fuie.api.config.components.Checkbox;
-import dev.JustRed23.fuie.api.config.components.ConfigComponent;
-import dev.JustRed23.fuie.api.config.components.InputBox;
-import dev.JustRed23.fuie.api.config.components.Slider;
+import dev.JustRed23.fuie.api.config.components.*;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class TestScreen extends Screen {
 
     ConfigComponent<?>[] component;
+
+    enum TestEnum {
+        OPTION_1,
+        OPTION_2,
+        OPTION_3;
+
+        public String toString() {
+            return name().replace("_", " ");
+        }
+    }
 
     protected TestScreen() {
         super(Component.literal("Testing"));
@@ -34,13 +42,29 @@ public class TestScreen extends Screen {
         InputBox inputBox = new InputBox("Bingus Box", "This is an input box", "bingus", 20);
         inputBox.setY(slider3.getY() + slider3.getHeight() + 10);
 
+        List<String> list = Arrays.asList("Option 1", "Option 2", "Option 3", "Option 4", "Option 5");
+
+        SelectBox selectBox1 = new SelectBox("String Select Box", "This is a string select box", list);
+        selectBox1.setY(inputBox.getY() + inputBox.getHeight() + 10);
+
+        SelectBox selectBox2 = new SelectBox("String Select Box", "This is an string select box", list, "Option 3");
+        selectBox2.setX(selectBox1.getX() + selectBox1.getWidth() + 10);
+        selectBox2.setY(selectBox1.getY());
+
+        SelectBox enumBox = new SelectBox("Enum Select Box", "This is an enum select box", TestEnum.values(), TestEnum.OPTION_1);
+        enumBox.setX(selectBox2.getX() + selectBox2.getWidth() + 10);
+        enumBox.setY(selectBox2.getY());
+
         component = new ConfigComponent[] {
                 checkbox1,
                 checkbox2,
                 slider1,
                 slider2,
                 slider3,
-                inputBox
+                inputBox,
+                selectBox1,
+                selectBox2,
+                enumBox
         };
     }
 
@@ -61,6 +85,11 @@ public class TestScreen extends Screen {
     public boolean mouseReleased(double $$0, double $$1, int $$2) {
         Arrays.stream(component).forEach(c -> c.onMouseRelease($$0, $$1));
         return super.mouseReleased($$0, $$1, $$2);
+    }
+
+    public void mouseMoved(double $$0, double $$1) {
+        Arrays.stream(component).forEach(c -> c.onMouseMove($$0, $$1));
+        super.mouseMoved($$0, $$1);
     }
 
     public boolean mouseDragged(double $$0, double $$1, int $$2, double $$3, double $$4) {
