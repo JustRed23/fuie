@@ -5,10 +5,9 @@ import net.minecraft.client.gui.GuiGraphics;
 public abstract class ComponentEvents extends ComponentGraphics {
 
     //Peripheral events
-    public void onMouseEnter() {}
-    public void onMouseLeave() {}
     public void onMouseClick(double mouseX, double mouseY) {}
     public void onMouseRelease(double mouseX, double mouseY) {}
+    public void onMouseMove(double mouseX, double mouseY) {}
     public void onMouseDrag(double mouseX, double mouseY, double deltaX, double deltaY) {}
     public void onMouseScroll(double mouseX, double mouseY, double scroll) {}
 
