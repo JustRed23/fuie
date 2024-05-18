@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class InputBox extends ConfigComponent<String> {
 
-    public final int minBoxHeight = 13;
+    public final int minBoxHeight = 12;
 
     public int boxBorder = 1;
     public int textIndent = 2;
