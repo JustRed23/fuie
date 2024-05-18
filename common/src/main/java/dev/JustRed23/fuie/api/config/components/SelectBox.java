@@ -9,7 +9,7 @@ import java.util.List;
 
 public class SelectBox extends ConfigComponent<String> {
 
-    public final int minBoxHeight = 13;
+    public final int minBoxHeight = 12;
 
     public int textIndent = 2;
     public int choiceHeight = font.lineHeight + 2;
@@ -60,8 +60,7 @@ public class SelectBox extends ConfigComponent<String> {
         int centeredTextY = y + (height / 2) - (font.lineHeight / 2);
         int arrowWidth = drawArrow(g, centeredTextY);
 
-        String text = calculateDisplayString(getValue(), arrowWidth);
-        g.drawString(font, text, getComponentX() + textIndent, centeredTextY, getTextColor());
+        g.drawString(font, calculateDisplayString(getValue(), arrowWidth), getComponentX() + textIndent, centeredTextY, getTextColor());
 
         drawChoices(g, y + height);
     }
@@ -70,12 +69,12 @@ public class SelectBox extends ConfigComponent<String> {
         String currentArrow = expanded ? "▲" : "▼";
         int arrowWidth = font.width(currentArrow);
         g.drawString(font, currentArrow, getComponentX() + getComponentWidth() - arrowWidth - textIndent, y, getTextColor());
-        return arrowWidth;
+        return arrowWidth * 2;
     }
 
-    private String calculateDisplayString(String input, int arrowWidth) {
+    private String calculateDisplayString(String input, int padding) {
         int inputLength = input.length();
-        int availableWidth = getComponentWidth() - arrowWidth - textIndent;
+        int availableWidth = getComponentWidth() - padding - textIndent;
 
         if (font.width(input) <= availableWidth) return input;
 
@@ -100,7 +99,7 @@ public class SelectBox extends ConfigComponent<String> {
             int backgroundColor = choice.equals(selectedChoice) ? getForegroundColor() : getBackgroundColor();
 
             drawRect(g, getComponentX(), choiceY, getComponentWidth(), choiceHeight, backgroundColor);
-            g.drawString(font, choice, getComponentX() + textIndent, choiceY + 1, getTextColor());
+            g.drawString(font, calculateDisplayString(choice, textIndent * 3), getComponentX() + textIndent, choiceY + 1, getTextColor());
 
             choiceY += choiceHeight;
         }
@@ -164,15 +163,6 @@ public class SelectBox extends ConfigComponent<String> {
                 }
             }
         } else selectedChoice = "";
-    }
-
-    public void onKeyPress(int keyCode, int scanCode, int modifiers) {
-        System.out.println("Key Pressed: " + keyCode);
-        //TODO: arrow key navigation
-    }
-
-    public void onMouseScroll(double mouseX, double mouseY, double scroll) {
-        //TODO: scroll through choices
     }
 
     private List<String> availableChoices() {
