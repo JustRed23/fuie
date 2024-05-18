@@ -11,7 +11,6 @@ public class InputBox extends ConfigComponent<String> {
 
     public final int minBoxHeight = 13;
 
-    private int lastBoxBorder, lastTextIndent, lastCursorDelay;
     public int boxBorder = 1;
     public int textIndent = 2;
     public int cursorDelay = 10;
@@ -55,12 +54,6 @@ public class InputBox extends ConfigComponent<String> {
                 cursorCounter = 0;
                 cursorVisible = !cursorVisible;
             }
-        }
-
-        if (lastBoxBorder != boxBorder || lastTextIndent != textIndent || lastCursorDelay != cursorDelay) {
-            lastBoxBorder = boxBorder;
-            lastTextIndent = textIndent;
-            lastCursorDelay = cursorDelay;
         }
     }
 
