@@ -70,9 +70,9 @@ public class Slider extends ConfigComponent<Double> {
     }
 
     public void onMouseClick(double mouseX, double mouseY) {
-        final int sbX = getComponentX() + sliderIndent;
+        final int sbX = getComponentX() + sliderIndent - (sliderButtonWidth / 2);
         final int sbY = getComponentY() + (getComponentHeight() - (sliderBaseHeight / 2) - (sliderButtonHeight / 2));
-        final int sbW = getComponentWidth() - (sliderIndent * 2);
+        final int sbW = getComponentWidth() - (sliderIndent * 2) + sliderButtonWidth;
 
         final int rightX = sbX + sbW;
         final int topY = sbY - (sliderButtonHeight / 2);
