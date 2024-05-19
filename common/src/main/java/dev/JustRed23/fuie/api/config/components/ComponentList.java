@@ -116,11 +116,11 @@ public class ComponentList extends ConfigComponent<List<ConfigComponent<?>>> {
 
     public void onMouseDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
         if (enableDragging) {
-            int componentY = getComponentY();
-            int maxScroll = getComponentHeightTotal() - getComponentHeight();
+            int componentY = getComponentY() + titleCardHeight;
+            int maxScroll = getComponentHeightTotal() - getComponentHeight() + titleCardHeight;
 
             int relativeY = (int) (mouseY - componentY - (scrollBarHeight / 2.0));
-            double scrollRatio = (double) relativeY / (getComponentHeight() - scrollBarHeight - 2);
+            double scrollRatio = (double) relativeY / (getComponentHeight() - scrollBarHeight - titleCardHeight - 2);
 
             this.scroll = Mth.clamp((int) (scrollRatio * maxScroll), 0, maxScroll);
             return;
