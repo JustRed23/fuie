@@ -76,14 +76,14 @@ public class ComponentList extends ConfigComponent<List<ConfigComponent<?>>> {
         if (!needsScroll) return;
 
         int x = getComponentX() + getComponentWidth() - scrollBarWidth - 1;
-        int y = getComponentY() + 1;
+        int y = getComponentY() + titleCardHeight + 1;
 
-        drawRect(g, x, y, scrollBarWidth, getComponentHeight() - 2, scrollBarBackground);
+        drawRect(g, x, y, scrollBarWidth, getComponentHeight() - titleCardHeight - 2, scrollBarBackground);
 
-        scrollBarHeight = (getComponentHeight() * getComponentHeight()) / getComponentHeightTotal();
+        scrollBarHeight = ((getComponentHeight() - titleCardHeight) * getComponentHeight()) / getComponentHeightTotal();
         scrollBarHeight = Math.max(scrollBarHeight, minimumScrollBarHeight);
 
-        int sbY = Mth.clamp((getComponentHeight() * scroll) / getComponentHeightTotal(), 0, getComponentHeight() - scrollBarHeight - 2);
+        int sbY = Mth.clamp(((getComponentHeight() - titleCardHeight) * scroll) / getComponentHeightTotal(), 0, getComponentHeight() - titleCardHeight - scrollBarHeight - 2);
         scrollBarY = y + sbY;
 
         drawRect(g, x, scrollBarY, scrollBarWidth, scrollBarHeight, scrollBarForeground);
