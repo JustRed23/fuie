@@ -26,6 +26,8 @@ public class ComponentList extends ConfigComponent<List<ConfigComponent<?>>> {
     private int scrollBarY;
     private int scrollBarHeight;
 
+    private boolean componentsInitialized = false;
+
     public ComponentList(String name, @NotNull List<ConfigComponent<?>> components) {
         super(name, null, components);
         if (components.isEmpty()) throw new IllegalArgumentException("Component list cannot be empty");
@@ -54,13 +56,19 @@ public class ComponentList extends ConfigComponent<List<ConfigComponent<?>>> {
             lastComponentMargin = componentMargin;
             updateComponentPositions();
         }
+
+        if (!componentsInitialized && getComponents().stream().allMatch(c -> c.initialized)) {
+            componentsInitialized = true;
+            updateComponentPositions();
+            setHeight(Mth.clamp(getComponentHeightTotal() + titleCardHeight + 2, titleCardHeight + 2, getHeight()));
+        }
     }
 
     protected void renderComponent(GuiGraphics g) {
         drawRect(g, getComponentX(), getComponentY() + titleCardHeight, getComponentWidth(), getComponentHeight() - titleCardHeight, getBackgroundColor());
 
         drawRect(g, getComponentX(), getComponentY(), getComponentWidth(), titleCardHeight, getForegroundColor());
-        g.drawString(font, calculateDisplayString(getName(), 2), getComponentX() + 2, getComponentY() + 1, getTextColor());
+        g.drawString(font, calculateDisplayString(getName(), 6), getComponentX() + 2, getComponentY() + 1, getTextColor());
 
         g.enableScissor(getComponentX(), getComponentY() + titleCardHeight, getComponentX() + getComponentWidth() - scrollBarWidth - 2, getComponentY() + getComponentHeight());
         g.pose().pushPose();
