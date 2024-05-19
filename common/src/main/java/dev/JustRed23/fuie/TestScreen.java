@@ -53,7 +53,7 @@ public class TestScreen extends Screen {
                 enumBox
         };
 
-        componentList = new ComponentList(List.of(component));
+        componentList = new ComponentList("Testing", List.of(component));
         componentList.setX(10);
         componentList.setY(10);
     }

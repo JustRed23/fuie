@@ -24,8 +24,8 @@ public class ComponentList extends ConfigComponent<List<ConfigComponent<?>>> {
     private int scrollBarY;
     private int scrollBarHeight;
 
-    public ComponentList(@NotNull List<ConfigComponent<?>> components) {
-        super("Component List", null, components);
+    public ComponentList(String name, @NotNull List<ConfigComponent<?>> components) {
+        super(name, null, components);
         if (components.isEmpty()) throw new IllegalArgumentException("Component list cannot be empty");
 
         setWidth(components.stream().mapToInt(ConfigComponent::getWidth).max().orElse(100) + scrollBarWidth + 2);
