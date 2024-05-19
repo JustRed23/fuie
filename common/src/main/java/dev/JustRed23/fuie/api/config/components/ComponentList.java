@@ -92,7 +92,7 @@ public class ComponentList extends ConfigComponent<List<ConfigComponent<?>>> {
     public void onMouseScroll(double mouseX, double mouseY, double scroll) {
         if (needsScroll && inScrollBarBounds(mouseX, mouseY)) {
             int scrollAmount = (int) scroll * 10;
-            int maxScroll = getComponentHeightTotal() - getComponentHeight();
+            int maxScroll = getComponentHeightTotal() - getComponentHeight() + titleCardHeight;
             this.scroll = Mth.clamp(this.scroll - scrollAmount, 0, maxScroll);
             return;
         }
@@ -131,8 +131,8 @@ public class ComponentList extends ConfigComponent<List<ConfigComponent<?>>> {
 
     private boolean inScrollBarBounds(double mouseX, double mouseY) {
         int x = getComponentX() + getComponentWidth() - scrollBarWidth - 1;
-        int y = getComponentY() + 1;
-        return mouseX >= x && mouseX <= x + scrollBarWidth && mouseY >= y && mouseY <= y + getComponentHeight() - 2;
+        int y = getComponentY() + titleCardHeight + 1;
+        return mouseX >= x && mouseX <= x + scrollBarWidth && mouseY >= y && mouseY <= y + getComponentHeight() - titleCardHeight - 2;
     }
 
     private boolean inScrollBarKnobBounds(double mouseX, double mouseY) {
