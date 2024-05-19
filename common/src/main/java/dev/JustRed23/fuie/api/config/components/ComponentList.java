@@ -15,8 +15,14 @@ public class ComponentList extends ConfigComponent<List<ConfigComponent<?>>> {
     public int scrollBarForeground = 0xFF707070;
 
     private int lastComponentMargin = componentMargin;
+
+    private boolean enableDragging;
+
     private boolean needsScroll;
     private int scroll;
+
+    private int scrollBarY;
+    private int scrollBarHeight;
 
     public ComponentList(@NotNull List<ConfigComponent<?>> components) {
         super("Component List", null, components);
@@ -69,11 +75,13 @@ public class ComponentList extends ConfigComponent<List<ConfigComponent<?>>> {
 
         drawRect(g, x, y, scrollBarWidth, getComponentHeight() - 2, scrollBarBackground);
 
-        int scrollBarHeight = (getComponentHeight() * getComponentHeight()) / getComponentHeightTotal();
+        scrollBarHeight = (getComponentHeight() * getComponentHeight()) / getComponentHeightTotal();
         scrollBarHeight = Math.max(scrollBarHeight, minimumScrollBarHeight);
 
-        int scrollBarY = Mth.clamp((getComponentHeight() * scroll) / getComponentHeightTotal(), 0, getComponentHeight() - scrollBarHeight - 2);
-        drawRect(g, x, y + scrollBarY, scrollBarWidth, scrollBarHeight, scrollBarForeground);
+        int sbY = Mth.clamp((getComponentHeight() * scroll) / getComponentHeightTotal(), 0, getComponentHeight() - scrollBarHeight - 2);
+        scrollBarY = y + sbY;
+
+        drawRect(g, x, scrollBarY, scrollBarWidth, scrollBarHeight, scrollBarForeground);
     }
 
     public void onMouseScroll(double mouseX, double mouseY, double scroll) {
@@ -87,16 +95,32 @@ public class ComponentList extends ConfigComponent<List<ConfigComponent<?>>> {
         getComponents().forEach(component -> component.onMouseScroll(mouseX, mouseY, scroll));
     }
 
-    //TODO: scrollbar dragging
     public void onMouseClick(double mouseX, double mouseY) {
+        if (needsScroll && inScrollBarKnobBounds(mouseX, mouseY)) {
+            enableDragging = true;
+            return;
+        }
+
         getComponents().forEach(component -> component.onMouseClick(mouseX, mouseY + scroll));
     }
 
     public void onMouseRelease(double mouseX, double mouseY) {
+        enableDragging = false;
         getComponents().forEach(component -> component.onMouseRelease(mouseX, mouseY + scroll));
     }
 
     public void onMouseDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
+        if (enableDragging) {
+            int componentY = getComponentY();
+            int maxScroll = getComponentHeightTotal() - getComponentHeight();
+
+            int relativeY = (int) (mouseY - componentY - (scrollBarHeight / 2.0));
+            double scrollRatio = (double) relativeY / (getComponentHeight() - scrollBarHeight - 2);
+
+            this.scroll = Mth.clamp((int) (scrollRatio * maxScroll), 0, maxScroll);
+            return;
+        }
+
         getComponents().forEach(component -> component.onMouseDrag(mouseX, mouseY + scroll, deltaX, deltaY));
     }
 
@@ -104,6 +128,11 @@ public class ComponentList extends ConfigComponent<List<ConfigComponent<?>>> {
         int x = getComponentX() + getComponentWidth() - scrollBarWidth - 1;
         int y = getComponentY() + 1;
         return mouseX >= x && mouseX <= x + scrollBarWidth && mouseY >= y && mouseY <= y + getComponentHeight() - 2;
+    }
+
+    private boolean inScrollBarKnobBounds(double mouseX, double mouseY) {
+        return mouseX >= getComponentX() + getComponentWidth() - scrollBarWidth - 1 && mouseX <= getComponentX() + getComponentWidth() - 1 &&
+                mouseY >= scrollBarY && mouseY <= scrollBarY + scrollBarHeight;
     }
 
     public @NotNull List<ConfigComponent<?>> getComponents() {
