@@ -14,6 +14,8 @@ public class ComponentList extends ConfigComponent<List<ConfigComponent<?>>> {
     public int scrollBarBackground = 0xFF444444;
     public int scrollBarForeground = 0xFF707070;
 
+    private final int titleCardHeight = font.lineHeight + 2;
+
     private int lastComponentMargin = componentMargin;
 
     private boolean enableDragging;
@@ -35,7 +37,7 @@ public class ComponentList extends ConfigComponent<List<ConfigComponent<?>>> {
     private void updateComponentPositions() {
         if (!initialized) return;
 
-        int currentY = getComponentY();
+        int currentY = getComponentY() + titleCardHeight;
         for (ConfigComponent<?> component : getComponents()) {
             component.setX(getComponentX());
             component.setY(currentY);
@@ -55,9 +57,12 @@ public class ComponentList extends ConfigComponent<List<ConfigComponent<?>>> {
     }
 
     protected void renderComponent(GuiGraphics g) {
-        drawRect(g, getComponentX(), getComponentY(), getComponentWidth(), getComponentHeight(), getBackgroundColor());
+        drawRect(g, getComponentX(), getComponentY() + titleCardHeight, getComponentWidth(), getComponentHeight() - titleCardHeight, getBackgroundColor());
 
-        g.enableScissor(getComponentX(), getComponentY(), getComponentX() + getComponentWidth() - scrollBarWidth - 2, getComponentY() + getComponentHeight());
+        drawRect(g, getComponentX(), getComponentY(), getComponentWidth(), titleCardHeight, getForegroundColor());
+        g.drawString(font, calculateDisplayString(getName(), 2), getComponentX() + 2, getComponentY() + 1, getTextColor());
+
+        g.enableScissor(getComponentX(), getComponentY() + titleCardHeight, getComponentX() + getComponentWidth() - scrollBarWidth - 2, getComponentY() + getComponentHeight());
         g.pose().pushPose();
         g.pose().translate(0, -scroll, 0);
         getComponents().forEach(component -> component.onComponentRender(g));
