@@ -15,6 +15,7 @@ public abstract class ConfigComponent<T> extends ComponentEvents {
     private @Nullable T value;
 
     protected final Font font = Minecraft.getInstance().font;
+    protected boolean initialized = false;
 
     public ConfigComponent(@NotNull String name, @Nullable String description, @Nullable T defaultValue) {
         this.name = name;
@@ -30,6 +31,8 @@ public abstract class ConfigComponent<T> extends ComponentEvents {
         setBorderColor(0xFFAAAAAA);
         setForegroundColor(0xFF0098FF);
         setTextColor(0xFFFFFFFF);
+
+        initialized = true;
     }
 
     //Enforce the implementation of these methods
