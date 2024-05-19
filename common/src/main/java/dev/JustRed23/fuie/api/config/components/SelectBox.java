@@ -59,7 +59,7 @@ public class SelectBox extends ConfigComponent<String> {
         int centeredTextY = y + (height / 2) - (font.lineHeight / 2);
         int arrowWidth = drawArrow(g, centeredTextY);
 
-        g.drawString(font, calculateDisplayString(getValue(), arrowWidth), getComponentX() + textIndent, centeredTextY, getTextColor());
+        g.drawString(font, calculateDisplayString(getValue(), arrowWidth + textIndent), getComponentX() + textIndent, centeredTextY, getTextColor());
 
         drawChoices(g, y + height - 1);
     }
@@ -71,21 +71,6 @@ public class SelectBox extends ConfigComponent<String> {
         return arrowWidth * 2;
     }
 
-    private String calculateDisplayString(String input, int padding) {
-        int inputLength = input.length();
-        int availableWidth = getComponentWidth() - padding - textIndent;
-
-        if (font.width(input) <= availableWidth) return input;
-
-        String subStr = "";
-        for (int i = 0; i < inputLength; i++) {
-            subStr = input.substring(0, i);
-            if (font.width(subStr + "...") > availableWidth) break;
-        }
-
-        return subStr + "...";
-    }
-
     private void drawChoices(GuiGraphics g, int y) {
         if (!expanded) return;
 
@@ -94,7 +79,7 @@ public class SelectBox extends ConfigComponent<String> {
             int backgroundColor = choice.equals(selectedChoice) ? getForegroundColor() : getBackgroundColor();
 
             drawRect(g, getComponentX(), choiceY, getComponentWidth(), choiceHeight, backgroundColor);
-            g.drawString(font, calculateDisplayString(choice, textIndent * 3), getComponentX() + textIndent, choiceY + 1, getTextColor());
+            g.drawString(font, calculateDisplayString(choice, textIndent * 4), getComponentX() + textIndent, choiceY + 1, getTextColor());
 
             choiceY += choiceHeight;
         }

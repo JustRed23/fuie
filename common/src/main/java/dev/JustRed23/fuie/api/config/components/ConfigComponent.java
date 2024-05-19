@@ -57,6 +57,21 @@ public abstract class ConfigComponent<T> extends ComponentEvents {
         g.vLine(x + width, y, y + height, color);
     }
 
+    protected String calculateDisplayString(String input, int padding) {
+        int inputLength = input.length();
+        int availableWidth = getComponentWidth() - padding;
+
+        if (font.width(input) <= availableWidth) return input;
+
+        String subStr = "";
+        for (int i = 0; i < inputLength; i++) {
+            subStr = input.substring(0, i);
+            if (font.width(subStr + "...") > availableWidth) break;
+        }
+
+        return subStr + "...";
+    }
+
     //Getters and Setters
     public @NotNull String getName() {
         return name;
