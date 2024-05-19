@@ -14,7 +14,6 @@ public class SelectBox extends ConfigComponent<String> {
     public int textIndent = 2;
     public int choiceHeight = font.lineHeight + 2;
 
-    private final int boxBorder = 1;
     private final List<String> choices;
 
     private boolean expanded = false;
@@ -29,7 +28,7 @@ public class SelectBox extends ConfigComponent<String> {
         this.choices = choices;
         this.selectedChoice = defaultValue;
 
-        setHeight(minBoxHeight + font.lineHeight + 2 + (availableChoices().size() * choiceHeight) + (boxBorder * 4));
+        setHeight(minBoxHeight + font.lineHeight + 5 + (availableChoices().size() * choiceHeight));
     }
 
     public SelectBox(@NotNull String name, @Nullable String description, @NotNull Enum<?>[] choices, @NotNull Enum<?> defaultValue) {
@@ -42,7 +41,7 @@ public class SelectBox extends ConfigComponent<String> {
 
     protected void setHeight(int height) {
         int choicesSize = choices != null ? (availableChoices().size() * choiceHeight) : 0;
-        int defaultHeight = minBoxHeight + font.lineHeight + 2 + choicesSize + (boxBorder * 4);
+        int defaultHeight = minBoxHeight + font.lineHeight + 5 + choicesSize;
         if (height < defaultHeight) height = defaultHeight;
         super.setHeight(height);
     }
@@ -54,15 +53,15 @@ public class SelectBox extends ConfigComponent<String> {
 
         int y = getComponentY() + font.lineHeight + 1;
         int height = Math.min(minBoxHeight, getComponentHeight() - font.lineHeight - 1);
-        drawHollowRect(g, getComponentX() - boxBorder, y - boxBorder, getComponentWidth() + (boxBorder * 2), height + (boxBorder * 2), getBorderColor());
         drawRect(g, getComponentX(), y, getComponentWidth(), height, getBackgroundColor());
+        drawHollowRect(g, getComponentX(), y, getComponentWidth(), height, getBorderColor());
 
         int centeredTextY = y + (height / 2) - (font.lineHeight / 2);
         int arrowWidth = drawArrow(g, centeredTextY);
 
         g.drawString(font, calculateDisplayString(getValue(), arrowWidth), getComponentX() + textIndent, centeredTextY, getTextColor());
 
-        drawChoices(g, y + height);
+        drawChoices(g, y + height - 1);
     }
 
     private int drawArrow(GuiGraphics g, int y) {
@@ -90,11 +89,7 @@ public class SelectBox extends ConfigComponent<String> {
     private void drawChoices(GuiGraphics g, int y) {
         if (!expanded) return;
 
-        int height = y + (availableChoices().size() * choiceHeight);
-
-        drawHollowRect(g, getComponentX() - boxBorder, y, getComponentWidth() + (boxBorder * 2), height - y + (boxBorder * 2), getBorderColor());
-
-        int choiceY = y + boxBorder;
+        int choiceY = y + 1;
         for (String choice : availableChoices()) {
             int backgroundColor = choice.equals(selectedChoice) ? getForegroundColor() : getBackgroundColor();
 
@@ -103,6 +98,9 @@ public class SelectBox extends ConfigComponent<String> {
 
             choiceY += choiceHeight;
         }
+
+        int height = y + (availableChoices().size() * choiceHeight) + 2;
+        drawHollowRect(g, getComponentX(), y, getComponentWidth(), height - y, getBorderColor());
     }
 
     public void onMouseClick(double mouseX, double mouseY) {
@@ -110,12 +108,6 @@ public class SelectBox extends ConfigComponent<String> {
         int y = getComponentY() + font.lineHeight + 1;
         int width = x + getComponentWidth();
         int height = y + Math.min(minBoxHeight, getComponentHeight() - font.lineHeight - 1);
-
-        //count border
-        x -= boxBorder;
-        y -= boxBorder;
-        width += boxBorder;
-        height += boxBorder;
 
         if(mouseX >= x && mouseX <= width && mouseY >= y) {
             if(mouseY <= height)
@@ -143,18 +135,12 @@ public class SelectBox extends ConfigComponent<String> {
         int width = x + getComponentWidth();
         int height = y + Math.min(minBoxHeight, getComponentHeight() - font.lineHeight - 1);
 
-        //count border
-        x -= boxBorder;
-        y -= boxBorder;
-        width += boxBorder;
-        height += boxBorder;
-
         //update y and height
-        y += height - y + boxBorder;
+        y += height - y;
         height = y + (availableChoices().size() * choiceHeight);
 
         if (mouseX >= x && mouseX <= width && mouseY >= y && mouseY <= height) {
-            int choiceY = y;
+            int choiceY = y - 1;
             for (String choice : availableChoices()) {
                 choiceY += choiceHeight;
                 if (mouseY < choiceY) {

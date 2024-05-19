@@ -11,7 +11,6 @@ public class InputBox extends ConfigComponent<String> {
 
     public final int minBoxHeight = 12;
 
-    public int boxBorder = 1;
     public int textIndent = 2;
     public int cursorDelay = 10;
 
@@ -60,10 +59,10 @@ public class InputBox extends ConfigComponent<String> {
     protected void renderComponent(GuiGraphics g) {
         g.drawString(font, getName(), getComponentX(), getComponentY(), getTextColor());
 
-        int y = getComponentY() + font.lineHeight + 1;
-        int height = Math.min(minBoxHeight, getComponentHeight() - font.lineHeight - 1);
-        drawHollowRect(g, getComponentX() - boxBorder, y - boxBorder, getComponentWidth() + (boxBorder * 2), height + (boxBorder * 2), hasFocus ? getForegroundColor() : getBorderColor());
+        int y = getComponentY() + font.lineHeight;
+        int height = Math.min(minBoxHeight, getComponentHeight() - font.lineHeight);
         drawRect(g, getComponentX(), y, getComponentWidth(), height, getBackgroundColor());
+        drawHollowRect(g, getComponentX(), y, getComponentWidth(), height, hasFocus ? getForegroundColor() : getBorderColor());
 
         String text = getValue() == null ? "" : getValue();
         text = calculateDisplayText(text);
@@ -105,12 +104,6 @@ public class InputBox extends ConfigComponent<String> {
         int y = getComponentY() + font.lineHeight + 1;
         int width = x + getComponentWidth();
         int height = y + Math.min(minBoxHeight, getComponentHeight() - font.lineHeight - 1);
-
-        //count border
-        x -= boxBorder;
-        y -= boxBorder;
-        width += boxBorder;
-        height += boxBorder;
 
         hasFocus = mouseX >= x && mouseX <= width && mouseY >= y && mouseY <= height;
     }
